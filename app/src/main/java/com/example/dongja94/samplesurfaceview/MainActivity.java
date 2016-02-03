@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         });
 
-        SurfaceView surfaceView = (SurfaceView)findViewById(R.id.surfaceView);
+        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceView.getHolder().addCallback(this);
 
         isRunning = true;
@@ -51,22 +51,23 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     int radius = 0;
     boolean isRunning = false;
+
     private void drawCircleAnimation() {
         mPaint.setColor(Color.GREEN);
-        while(isRunning) {
-//            while(mSurface == null && isRunning) {
-//                synchronized (drawLock) {
-//                    try {
-//                        drawLock.wait();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//            if (!isRunning) {
-//                return;
-//            }
+        while (isRunning) {
+            while (mSurface == null && isRunning) {
+                synchronized (drawLock) {
+                    try {
+                        drawLock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            if (!isRunning) {
+                return;
+            }
 
             Canvas canvas = null;
             if (mSurface == null) {
@@ -133,12 +134,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     void drawNotify() {
-//        try {
-//            drawLock.notifyAll();
-//        } catch (IllegalMonitorStateException e) {
-//
-//        }
+        synchronized (drawLock) {
+            drawLock.notifyAll();
+        }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
